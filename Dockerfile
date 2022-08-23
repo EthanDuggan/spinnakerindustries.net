@@ -13,6 +13,9 @@ RUN ["npm", "install"]
 # Copy the rest of our app into our working directory (anything defined in .dockerignore will be ignored, for example the node_modules folder will be ignored because we already installed our third-party modules when we ran 'npm install')
 COPY . .
 
+# Build the svelte app
+RUN ["npm", "run", "build"]
+
 # Set the environment variable 'PORT' to 8080, and expose 8080.  This will make our app available over port 8080 of our docker container.
 ENV PORT=8080
 EXPOSE 8080

@@ -4,9 +4,9 @@
 	import router from 'page';  //import router object from pages.js module to perform client-side routing with
 
 	//import pages
-	import Home from './Home.page.svelte';
-	import Test from './Test.page.svelte';
-	import UndefinedRoute from './UndefinedRoute.page.svelte';
+	import Home from './pages/Home.page.svelte';
+	import Test from './pages/Test.page.svelte';
+	import UndefinedRoute from './pages/UndefinedRoute.page.svelte';
 
 	//routes
 	let page;

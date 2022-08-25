@@ -1,5 +1,8 @@
 <script>
     export let params;
+    fetch('http://localhost:8081/installationinstructions')
+        .then(res => res.json())
+        .then(data => console.log(data));
 </script>
 
 <main>

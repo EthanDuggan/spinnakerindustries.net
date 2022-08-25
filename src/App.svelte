@@ -13,6 +13,7 @@
 	let params;
 
 	router('/', () => page = Home);
+	router('/test', () => page = Test);
 	router('/test/:param1',
 		(ctx, next) => {
 			params = ctx.params;

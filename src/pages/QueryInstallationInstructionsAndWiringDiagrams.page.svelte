@@ -1,20 +1,33 @@
 <script>
 import { getContext } from "svelte";
+import DataTable from '../components/DataTable.svelte';
 
 // fetch data from the backend
 const backend = getContext('backend');
-console.log(backend + 'installationInstructions');
-console.log('hello!!!');
 let installationInstructions = fetch(backend + 'installationInstructions').then(res => res.json());
 let wiringDiagrams = fetch(backend + 'wiringDiagrams').then(res => res.json());
+let installationInstructionsColumns = [
+    {header: '5 Mil #', key: '5 Mil #'},
+    {header: 'L-REMD-i', key: 'L-REMD-i'},
+    {header: 'Description', key: 'Description'},
+    {header: 'Date', key: 'Date'},
+    {header: 'Notes', key: '__EMPTY'},
+];
+
+let displayData = installationInstructions;
+
+let searchQuery = '';
 
 </script>
 
 <main>
     <h1>Page Title</h1>
-    {#await installationInstructions}
+    {#await displayData}
         <p>Fetching data...</p>
-    {:then data}
+    {:then Data}
+        <DataTable columns={installationInstructionsColumns} data={Data}/>
+        <!--<input type="text" placeholder="search..." bind:value={searchQuery}>
+        <button on:click={console.log('clicked')}>Search</button>
         <table>
             <thead>
                 <tr>
@@ -36,7 +49,7 @@ let wiringDiagrams = fetch(backend + 'wiringDiagrams').then(res => res.json());
                     </tr>
                 {/each}
             </tbody>
-        </table>
+        </table>-->
     {:catch error}
         <p>there was an error</p>
     {/await}

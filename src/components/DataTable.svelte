@@ -9,8 +9,8 @@
 
     let recordsPerPage = 50;
     let tablePage = 1;
-    //$: tablePageFirstIndex = (tablePage - 1) * recordsPerPage;
-    //$: tablePageLastIndex = (tablePage * recordsPerPage) - 1;
+    $: numPages = Math.ceil(filteredDataOrder.length / recordsPerPage);
+
     $: pageRecordIndexes = filteredDataOrder.slice((tablePage - 1) * recordsPerPage, (tablePage * recordsPerPage) - 1);
     
     function createFilteredDataOrder(order, filter) {
@@ -26,8 +26,23 @@
     let searchQuery = ''; //This value is bound to the value of the table's searchbar, so when a user types there the value of this variable is automatically updated
     
     function filterRecordsOnSearch(event) {
-        console.log(searchQuery);
-        event.preventDefault(); //since this function is a callback for a form submission and submitting a form reloads the page by default.  This line prevents the page from reloading.
+        //since this function is a callback for a form submission and submitting a form reloads the page by default.  This line prevents the page from reloading.
+        event.preventDefault();
+
+        let tokens = searchQuery.split(/[\s]+/);
+        let ranks = new Array(data.length).fill(0);
+        
+        for (let i = 0; i < data.length; i++) {
+            for (const col of columns) {
+                const record = data[i];
+                for (const token of tokens) {
+                    const recordValue = record[col.key];
+                    if (recordValue !== undefined && recordValue.toString().includes(token)) ranks[i] += 10;
+                }
+            }
+        }
+
+        dataOrder = dataOrder.sort(function(a, b) {return ranks[b] - ranks[a];});        
     }
 
 </script>
@@ -37,6 +52,10 @@
         <input type="text" placeholder="search..." bind:value={searchQuery} />
         <input type="submit" value="Search" />
     </form>
+
+    <button on:click={() => tablePage = tablePage > 1 ? tablePage - 1 : 1}>prev</button>
+    <button on:click={() => tablePage = tablePage < numPages ? tablePage + 1 : numPages}>next</button>
+    <span>page {tablePage} of {numPages}</span>
     
     <table>
         <thead>

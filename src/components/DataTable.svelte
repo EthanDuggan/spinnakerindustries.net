@@ -13,16 +13,31 @@
     //$: tablePageLastIndex = (tablePage * recordsPerPage) - 1;
     $: pageRecordIndexes = filteredDataOrder.slice((tablePage - 1) * recordsPerPage, (tablePage * recordsPerPage) - 1);
     
-    function createFilteredDataOrder (order, filter) {
+    function createFilteredDataOrder(order, filter) {
         let ret = new Array();
         for (const x of dataOrder) {
             if (dataFilter[x]) ret.push(x);
         }
         return ret;
     }
+
+    // Searchbar functionality
+    
+    let searchQuery = ''; //This value is bound to the value of the table's searchbar, so when a user types there the value of this variable is automatically updated
+    
+    function filterRecordsOnSearch(event) {
+        console.log(searchQuery);
+        event.preventDefault(); //since this function is a callback for a form submission and submitting a form reloads the page by default.  This line prevents the page from reloading.
+    }
+
 </script>
 
 <main>
+    <form on:submit={filterRecordsOnSearch}>  
+        <input type="text" placeholder="search..." bind:value={searchQuery} />
+        <input type="submit" value="Search" />
+    </form>
+    
     <table>
         <thead>
             <tr>

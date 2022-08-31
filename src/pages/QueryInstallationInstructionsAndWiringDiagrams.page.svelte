@@ -16,7 +16,7 @@ let installationInstructionsColumns = [
 
 let displayData = installationInstructions;
 
-let searchQuery = '';
+//let searchQuery = '';
 
 </script>
 

@@ -62,24 +62,31 @@
 
 </script>
 
-<main>
-    <form on:submit={filterRecordsOnSearch}>  
-        <input type="text" placeholder="search..." bind:value={searchQuery} />
-        <input type="submit" value="Search" />
-    </form>
+<main class="datatable">
 
-    <span>items-per-page:
-        <select on:change={(ev) => {recordsPerPage = ev.target.value; tablePage = 1;}}> <!--using bind:value={recordsPerPage} here resulted in a weird bug where the dropdown would display blank when the page first loaded, so instead I set recordsPerPage in the callback-->
-            <option value=25>25</option>
-            <option value=50 selected>50</option>
-            <option value=100>100</option>
-            <option value=250>250</option>
-            <option value=1000>1000</option>
-        </select>
-    </span>
-    <span>page {tablePage} of {numPages}</span>
-    <button on:click={() => tablePage = tablePage > 1 ? tablePage - 1 : 1}>prev</button>
-    <button on:click={() => tablePage = tablePage < numPages ? tablePage + 1 : numPages}>next</button>
+    <header class="table-toolbar">
+        
+        <span>items-per-page:
+            <select on:change={(ev) => {recordsPerPage = ev.target.value; tablePage = 1;}}> <!--using bind:value={recordsPerPage} here resulted in a weird bug where the dropdown would display blank when the page first loaded, so instead I set recordsPerPage in the callback-->
+                <option value=25>25</option>
+                <option value=50 selected>50</option>
+                <option value=100>100</option>
+                <option value=250>250</option>
+                <option value=1000>1000</option>
+            </select>
+        </span>
+
+        <span>page {tablePage} of {numPages}
+            <button on:click={() => tablePage = tablePage > 1 ? tablePage - 1 : 1}>prev</button>
+            <button on:click={() => tablePage = tablePage < numPages ? tablePage + 1 : numPages}>next</button>
+        </span>
+
+        <form class="table-searchbar" on:submit={filterRecordsOnSearch}>  
+            <input type="text" placeholder="search..." bind:value={searchQuery} />
+            <input type="submit" value="Search" />
+        </form>
+
+    </header>
     
     <table>
         <thead>
@@ -99,4 +106,58 @@
             {/each}
         </tbody>
     </table>
+
 </main>
+
+<style>
+    main {
+        position: relative;
+    }
+
+    .table-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 3rem;
+        background-color: white;
+        position: sticky;
+        top: 0;
+    }
+
+    .table-toolbar * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .table-toolbar input,
+    .table-toolbar button {
+        padding: 0 0.25em 0.1em 0.25em;
+    }    
+
+    .table-searchbar {
+        display: inline-block;
+    }
+
+    table {
+        border-spacing: 0;
+    }
+
+    tbody tr:nth-child(odd) {
+        background-color: white;
+    }
+    tbody tr:nth-child(even) {
+        background-color: whitesmoke;
+    }
+
+    thead {
+        position: sticky;
+        top: 3rem;
+        background-color: white;
+    }
+
+    th {
+        padding: 2px 0;
+        border-bottom: 2px solid grey;
+    }
+
+</style>

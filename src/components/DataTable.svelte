@@ -29,20 +29,35 @@
         //since this function is a callback for a form submission and submitting a form reloads the page by default.  This line prevents the page from reloading.
         event.preventDefault();
 
+        //split the query into its space-separated words (tokens)
         let tokens = searchQuery.split(/[\s]+/);
+        //create a copy of the tokens array where the tokens are in all lowercase, this is done hear so that the toLowerCase method doesn't need to be run on every token each for each record we check, thus increasing performance at the cost of a tiny bit of extra memory usage
+        let lowerCaseTokens = [];
+        tokens.forEach((token, i) => {
+            lowerCaseTokens[i] = token.toLowerCase();
+        });
+        //create the ranks array with one entry per record in "data", initialize each rank to 0
         let ranks = new Array(data.length).fill(0);
         
+        //for each record in data, check all of its fields for occurances of the search tokens and add to its rank accordingly
         for (let i = 0; i < data.length; i++) {
+            const record = data[i];
             for (const col of columns) {
-                const record = data[i];
-                for (const token of tokens) {
-                    const recordValue = record[col.key];
-                    if (recordValue !== undefined && recordValue.toString().includes(token)) ranks[i] += 10;
+                let recordValue = record[col.key];
+                if (recordValue !== undefined) {
+                    recordValue += ''; //forces the type to be string and is apparently faster than doing recordValue = recordValue.toString()
+                    const lowerCaseRecordValue = recordValue.toLowerCase();
+                    //for each token, if it exists in the recordValue, add 10 to the current record's rank, otherwise, check if it exists in a case-insensitive maner, in which case add 9 to the rank
+                    for (let t = 0; t < tokens.length; t++) {
+                        if (recordValue.includes(tokens[t])) ranks[i] += 10;
+                        else if (lowerCaseRecordValue.includes(lowerCaseTokens[t])) ranks[i] += 9;
+                    }
                 }
             }
+            dataFilter[i] = ranks[i] > 0 ? true : false; //if the record's rank is greater than 0, meaning that at least one of the tokens was matched to at least one of its fields, show the record in the search results, otherwise, don't
         }
 
-        dataOrder = dataOrder.sort(function(a, b) {return ranks[b] - ranks[a];});        
+        dataOrder = dataOrder.sort(function(a, b) {return ranks[b] - ranks[a];}); //use JS's built-in array quicksort method to order the records based on rank
     }
 
 </script>
@@ -53,9 +68,18 @@
         <input type="submit" value="Search" />
     </form>
 
+    <span>items-per-page:
+        <select on:change={(ev) => {recordsPerPage = ev.target.value; tablePage = 1;}}> <!--using bind:value={recordsPerPage} here resulted in a weird bug where the dropdown would display blank when the page first loaded, so instead I set recordsPerPage in the callback-->
+            <option value=25>25</option>
+            <option value=50 selected>50</option>
+            <option value=100>100</option>
+            <option value=250>250</option>
+            <option value=1000>1000</option>
+        </select>
+    </span>
+    <span>page {tablePage} of {numPages}</span>
     <button on:click={() => tablePage = tablePage > 1 ? tablePage - 1 : 1}>prev</button>
     <button on:click={() => tablePage = tablePage < numPages ? tablePage + 1 : numPages}>next</button>
-    <span>page {tablePage} of {numPages}</span>
     
     <table>
         <thead>

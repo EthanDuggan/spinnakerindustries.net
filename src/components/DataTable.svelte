@@ -3,8 +3,9 @@
     export let columns;  // MUST BE AN ARRAY OF DICTIONARIES IN THE FORM {header: 'Foo', key: 'foo', datatype: bar}
     export let data;  // MUST BE AN ARRAY OF DICTIONARIES WITH STRING KEYS THAT ARE CONSISTENT WITH THE VALUES OF THE "key" ATTRIBUTES OF THE OBJECTS IN THE COLUMN ARRAY
 
-    let dataOrder = [...Array(data.length).keys()];  // initially set to an array containing integers from 0 to the number of records in data
-    let dataFilter = new Array(data.length).fill(true);  // an array with one boolean entry for each record in data, initially all set to true to indicate that all records are to be shown
+    let dataOrder;
+    let dataFilter;
+    resetTable(); //this function sets dataOrder and dataFilter to their default states
     $: filteredDataOrder = createFilteredDataOrder(dataOrder, dataFilter); // this will be an array of the indexes of the data array for only the records that pass the filter and in the order they are to be displayed
 
     let recordsPerPage = 50;
@@ -14,14 +15,22 @@
     $: pageRecordIndexes = filteredDataOrder.slice((tablePage - 1) * recordsPerPage, (tablePage * recordsPerPage) - 1);
     
     function createFilteredDataOrder(order, filter) {
+        //console.log(order);
         let ret = new Array();
-        for (const x of dataOrder) {
-            if (dataFilter[x]) ret.push(x);
+        for (const x of order) {
+            if (filter[x]) ret.push(x);
         }
         return ret;
     }
 
-    // Searchbar functionality
+    function resetTable() {
+        //this function sets dataOrder and dataFilter to their default states
+        dataOrder = [...Array(data.length).keys()];  // initially set to an array containing integers from 0 to the number of records in data
+        dataFilter = [...Array(data.length).fill(true)];  // an array with one boolean entry for each record in data, initially all set to true to indicate that all records are to be shown
+        console.log(dataOrder);
+    };
+
+    // Searchbar Functionality
     
     let searchQuery = ''; //This value is bound to the value of the table's searchbar, so when a user types there the value of this variable is automatically updated
     
@@ -29,13 +38,17 @@
         //since this function is a callback for a form submission and submitting a form reloads the page by default.  This line prevents the page from reloading.
         event.preventDefault();
 
+        //check if the search query is empty
+        if (searchQuery.trim().length == 0) {
+            resetTable();
+            return;
+        }
+
         //split the query into its space-separated words (tokens)
         let tokens = searchQuery.split(/[\s]+/);
         //create a copy of the tokens array where the tokens are in all lowercase, this is done hear so that the toLowerCase method doesn't need to be run on every token each for each record we check, thus increasing performance at the cost of a tiny bit of extra memory usage
         let lowerCaseTokens = [];
-        tokens.forEach((token, i) => {
-            lowerCaseTokens[i] = token.toLowerCase();
-        });
+        tokens.forEach((token, i) => lowerCaseTokens[i] = token.toLowerCase());
         //create the ranks array with one entry per record in "data", initialize each rank to 0
         let ranks = new Array(data.length).fill(0);
         
@@ -60,13 +73,26 @@
         dataOrder = dataOrder.sort(function(a, b) {return ranks[b] - ranks[a];}); //use JS's built-in array quicksort method to order the records based on rank
     }
 
+    function changePage(ev) {
+        const newPage = ev.target.value;
+        if (newPage < 1) {
+            tablePage = 1;
+            ev.target.value = 1;
+        } else if(newPage > numPages) {
+            tablePage = numPages;
+            ev.target.value = numPages;
+        } else {
+            tablePage = newPage;
+        }
+    }
+
 </script>
 
 <main class="datatable">
 
     <header class="table-toolbar">
         
-        <span>items-per-page:
+        <span>showing 
             <select on:change={(ev) => {recordsPerPage = ev.target.value; tablePage = 1;}}> <!--using bind:value={recordsPerPage} here resulted in a weird bug where the dropdown would display blank when the page first loaded, so instead I set recordsPerPage in the callback-->
                 <option value=25>25</option>
                 <option value=50 selected>50</option>
@@ -74,11 +100,12 @@
                 <option value=250>250</option>
                 <option value=1000>1000</option>
             </select>
+             of {filteredDataOrder.length} items per page
         </span>
 
-        <span>page {tablePage} of {numPages}
-            <button on:click={() => tablePage = tablePage > 1 ? tablePage - 1 : 1}>prev</button>
-            <button on:click={() => tablePage = tablePage < numPages ? tablePage + 1 : numPages}>next</button>
+        <span class="table-page-selector">page 
+            <input type="number" value="{tablePage}" min="1" max="{numPages}" on:change={changePage}/>
+            of {numPages}
         </span>
 
         <form class="table-searchbar" on:submit={filterRecordsOnSearch}>  
@@ -132,7 +159,12 @@
     .table-toolbar input,
     .table-toolbar button {
         padding: 0 0.25em 0.1em 0.25em;
-    }    
+    }
+
+    .table-page-selector input {
+        text-align: center;
+        width: 3em;
+    }
 
     .table-searchbar {
         display: inline-block;

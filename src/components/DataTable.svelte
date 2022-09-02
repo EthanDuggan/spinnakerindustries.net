@@ -127,7 +127,7 @@
             {#each pageRecordIndexes as record_index}
             <tr>
                 {#each columns as col}
-                <td>{data[record_index][col.key]}</td>
+                <td>{#if data[record_index][col.key] !== undefined}{data[record_index][col.key]}{/if}</td>
                 {/each}
             </tr>
             {/each}
@@ -190,6 +190,10 @@
     th {
         padding: 2px 0;
         border-bottom: 2px solid grey;
+    }
+
+    td {
+        padding: 0 8px;
     }
 
 </style>

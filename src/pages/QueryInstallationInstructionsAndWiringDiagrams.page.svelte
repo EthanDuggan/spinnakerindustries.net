@@ -21,6 +21,7 @@ let displayData = installationInstructions;
 </script>
 
 <main>
+    <h1>page title</h1>
     {#await displayData}
         <p>Fetching data...</p>
     {:then Data}

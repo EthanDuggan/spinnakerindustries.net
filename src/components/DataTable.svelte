@@ -1,6 +1,6 @@
 <script>
 
-    export let columns;  // MUST BE AN ARRAY OF DICTIONARIES IN THE FORM {header: 'Foo', key: 'foo', datatype: bar}
+    export let columns;  // MUST BE AN ARRAY OF DICTIONARIES IN THE FORM {header: 'Foo', key: 'foo', datatype: 'bar', width: <number be interpreted as a percentage>, width: <number be interpreted as a percentage>, width: <number be interpreted as a percentage>}
     export let data;  // MUST BE AN ARRAY OF DICTIONARIES WITH STRING KEYS THAT ARE CONSISTENT WITH THE VALUES OF THE "key" ATTRIBUTES OF THE OBJECTS IN THE COLUMN ARRAY
 
     let dataOrder;
@@ -114,7 +114,7 @@
         </form>
 
     </header>
-    
+    <div class="table-wrapper">
     <table>
         <thead>
             <tr>
@@ -133,13 +133,10 @@
             {/each}
         </tbody>
     </table>
-
+    </div>
 </main>
 
 <style>
-    main {
-        position: relative;
-    }
 
     .table-toolbar {
         display: flex;
@@ -148,6 +145,7 @@
         height: 3rem;
         background-color: white;
         position: sticky;
+        width: 100%;
         top: 0;
     }
 
@@ -171,7 +169,10 @@
     }
 
     table {
+        table-layout: fixed;
+        width: 100%;
         border-spacing: 0;
+        
     }
 
     tbody tr:nth-child(odd) {
@@ -183,17 +184,39 @@
 
     thead {
         position: sticky;
-        top: 3rem;
+        top: 0;
         background-color: white;
     }
 
     th {
         padding: 2px 0;
         border-bottom: 2px solid grey;
+        border-left: 1px solid grey;
+        border-right: 1px solid grey;
+        width: 500px;
     }
 
     td {
         padding: 0 8px;
     }
+    .table-wrapper {
+        overflow: scroll;
+        max-height: calc(100vh - 3em);
+    }
+
+    /*table, thead, tbody {
+        display: block;
+    }
+    .table {
+        overflow: auto;
+    }
+    tr {
+        display: flex;
+        
+    }
+    td, th {
+        display: inline-block;
+        width: 1000em;
+    }*/
 
 </style>

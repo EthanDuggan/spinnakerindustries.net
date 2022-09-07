@@ -115,24 +115,24 @@
 
     </header>
     <div class="table-wrapper">
-    <table>
-        <thead>
-            <tr>
-                {#each columns as col}
-                <th>{col.header}</th>
+        <table>
+            <thead>
+                <tr>
+                    {#each columns as col}
+                    <th>{col.header}</th>
+                    {/each}
+                </tr>
+            </thead>
+            <tbody>
+                {#each pageRecordIndexes as record_index}
+                <tr>
+                    {#each columns as col}
+                    <td>{#if data[record_index][col.key] !== undefined}{data[record_index][col.key]}{/if}</td>
+                    {/each}
+                </tr>
                 {/each}
-            </tr>
-        </thead>
-        <tbody>
-            {#each pageRecordIndexes as record_index}
-            <tr>
-                {#each columns as col}
-                <td>{#if data[record_index][col.key] !== undefined}{data[record_index][col.key]}{/if}</td>
-                {/each}
-            </tr>
-            {/each}
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     </div>
 </main>
 
@@ -153,7 +153,16 @@
         margin: 0;
         padding: 0;
     }
-
+    .table-toolbar > * {
+        flex: 1;
+        text-align: center;
+    }
+    .table-toolbar > :first-child {
+        text-align: left;
+    }
+    .table-toolbar > :last-child {
+        text-align: right;
+    }
     .table-toolbar input,
     .table-toolbar button {
         padding: 0 0.25em 0.1em 0.25em;
@@ -200,7 +209,7 @@
         padding: 0 8px;
     }
     .table-wrapper {
-        overflow: scroll;
+        overflow: auto;
         max-height: calc(100vh - 3em);
     }
 

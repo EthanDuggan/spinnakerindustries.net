@@ -13,44 +13,49 @@ let installationInstructionsColumns = [
     {header: 'Date', key: 'Date'},
     {header: 'Notes', key: '__EMPTY'},
 ];
+let wiringDiagramsColumns = [
+    {header: 'New DWG #', key: 'NEW DWG#'},
+    {header: 'Description', key: ';'},
+    {header: 'Original DWG', key: 'ORIGINAL DWG'},
+    {header: 'Notes', key: 'MORE INFO'},
+    {header: 'Labels', key: 'LABELS'},
+];
 
-let displayData = installationInstructions;
-
-//let searchQuery = '';
+let currentTab = 'Wiring Diagrams';
 
 </script>
 
 <main>
-    <h1>page title</h1>
-    {#await displayData}
+    <nav class="tab-bar">
+        <button id="Wiring-Diagrams-Tab-Button" on:click={() => currentTab = 'Wiring Diagrams'}>Wiring Diagrams</button>
+        <button id="Installation-Instructions-Tab-Button" on:click={() => currentTab = 'Installation Instructions'}>Installation Instructions</button>
+    </nav>
+    <div class="tab {currentTab == 'Installation Instructions' ? 'current-tab' : ''}">
+        {#await installationInstructions}
         <p>Fetching data...</p>
-    {:then Data}
-        <DataTable columns={installationInstructionsColumns} data={Data}/>
-        <!--<input type="text" placeholder="search..." bind:value={searchQuery}>
-        <button on:click={console.log('clicked')}>Search</button>
-        <table>
-            <thead>
-                <tr>
-                    <th>5 Mil #</th>
-                    <th>L-REMD-i</th>
-                    <th>Description</th>
-                    <th>Date</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each data as row}
-                    <tr>
-                        <td>{row['5 Mil #']}</td>
-                        <td>{row['L-REMD-i']}</td>
-                        <td>{row['Description']}</td>
-                        <td>{row['Date']}</td>
-                        <td>{row['__EMPTY']}</td>
-                    </tr>
-                {/each}
-            </tbody>
-        </table>-->
-    {:catch error}
-        <p>there was an error</p>
-    {/await}
+        {:then Data}
+            <DataTable columns={installationInstructionsColumns} data={Data}/>
+        {:catch error}
+            <p>there was an error</p>
+        {/await}
+    </div>
+    <div class="tab {currentTab == 'Wiring Diagrams' ? 'current-tab' : ''}">
+        {#await wiringDiagrams}
+        <p>Fetching data...</p>
+        {:then Data}
+            <DataTable columns={wiringDiagramsColumns} data={Data}/>
+        {:catch error}
+            <p>there was an error</p>
+        {/await}
+    </div>
+    
 </main>
+
+<style>
+    .tab {
+        display: none;
+    }
+    .tab.current-tab {
+        display: block;
+    }
+</style>

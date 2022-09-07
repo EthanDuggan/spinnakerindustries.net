@@ -2,6 +2,11 @@
 
     export let columns;  // MUST BE AN ARRAY OF DICTIONARIES IN THE FORM {header: 'Foo', key: 'foo', datatype: 'bar', width: <number be interpreted as a percentage>, width: <number be interpreted as a percentage>, width: <number be interpreted as a percentage>}
     export let data;  // MUST BE AN ARRAY OF DICTIONARIES WITH STRING KEYS THAT ARE CONSISTENT WITH THE VALUES OF THE "key" ATTRIBUTES OF THE OBJECTS IN THE COLUMN ARRAY
+    
+    const maxColumnWidth = 64;
+    const minColumnWidth = 4;
+    const softMaxColumnWidth = 16; //this is the maximum column width for which if there is a value in the column with this many or fewer characters, then the width will be set to at least this value
+    calculateDefaultColumnWidths();
 
     let dataOrder;
     let dataFilter;
@@ -15,7 +20,6 @@
     $: pageRecordIndexes = filteredDataOrder.slice((tablePage - 1) * recordsPerPage, (tablePage * recordsPerPage) - 1);
     
     function createFilteredDataOrder(order, filter) {
-        //console.log(order);
         let ret = new Array();
         for (const x of order) {
             if (filter[x]) ret.push(x);
@@ -27,7 +31,6 @@
         //this function sets dataOrder and dataFilter to their default states
         dataOrder = [...Array(data.length).keys()];  // initially set to an array containing integers from 0 to the number of records in data
         dataFilter = [...Array(data.length).fill(true)];  // an array with one boolean entry for each record in data, initially all set to true to indicate that all records are to be shown
-        console.log(dataOrder);
     };
 
     // Searchbar Functionality
@@ -86,6 +89,31 @@
         }
     }
 
+    function calculateDefaultColumnWidths() {
+        for (const col of columns) {
+            if (col.width === undefined){
+                let columnCellDataLengths = data.map((row) => row[col.key] === undefined ? 0 : row[col.key].toString().length);
+                columnCellDataLengths.sort((a,b) => b - a);
+                col.width = Math.min(softMaxColumnWidth, columnCellDataLengths[0]);  //set the column width to the minimum, will (possibly) be overidden by next section
+                if (columnCellDataLengths[0] <= minColumnWidth) {
+                    col.width = minColumnWidth;
+                } else {
+                    for (let i = 0; i < columnCellDataLengths.length; i++) {
+                        let L = columnCellDataLengths[i];
+                        let P = i / columnCellDataLengths.length;
+                        if (L <= softMaxColumnWidth) {
+                            break;
+                        } else if ((maxColumnWidth / L) * P >= 0.5) {
+                            col.width = Math.min(L, maxColumnWidth);
+                            break;
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+
 </script>
 
 <main class="datatable">
@@ -119,7 +147,7 @@
             <thead>
                 <tr>
                     {#each columns as col}
-                    <th>{col.header}</th>
+                    <th style="width: {col.width}rem">{col.header}</th>
                     {/each}
                 </tr>
             </thead>
@@ -202,7 +230,6 @@
         border-bottom: 2px solid grey;
         border-left: 1px solid grey;
         border-right: 1px solid grey;
-        width: 500px;
     }
 
     td {
@@ -227,5 +254,9 @@
         display: inline-block;
         width: 1000em;
     }*/
+
+    tbody td {
+        overflow-wrap: break-word;
+    }
 
 </style>

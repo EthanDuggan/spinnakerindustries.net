@@ -65,6 +65,7 @@ let currentTab = 'Wiring Diagrams';
     .tab-bar {
         display: flex;
         border-bottom: 2px solid #08f;
+        padding: 2px 2px 0 2px;
     }
     .tab-bar button {
         border: none;

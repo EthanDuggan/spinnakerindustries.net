@@ -1,4 +1,8 @@
 <main>
-    <h1>Home</h1>
+    <h1>SpinnakerIndustries.net</h1>
     <p>This homepage is a work in progress!</p>
+    <h2>Tools</h2>
+    <ul>
+        <li><a href="http://localhost:8080/QueryInstallationInstructionsAndWiringDiagrams">Query Installation Instructions And Wiring Diagrams</a></li>
+    </ul>
 </main>

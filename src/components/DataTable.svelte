@@ -173,8 +173,10 @@
         height: 3rem;
         background-color: white;
         position: sticky;
-        width: 100%;
         top: 0;
+        padding: 0 4px;
+        width: 100%;
+        box-sizing: border-box;        
     }
 
     .table-toolbar * {

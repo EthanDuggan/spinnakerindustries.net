@@ -27,8 +27,8 @@ let currentTab = 'Wiring Diagrams';
 
 <main>
     <nav class="tab-bar">
-        <button id="Wiring-Diagrams-Tab-Button" on:click={() => currentTab = 'Wiring Diagrams'}>Wiring Diagrams</button>
-        <button id="Installation-Instructions-Tab-Button" on:click={() => currentTab = 'Installation Instructions'}>Installation Instructions</button>
+        <button id="Wiring-Diagrams-Tab-Button" class="{currentTab == 'Wiring Diagrams' ? 'current-tab-button' : ''}" on:click={() => currentTab = 'Wiring Diagrams'}>Wiring Diagrams</button>
+        <button id="Installation-Instructions-Tab-Button" class="{currentTab == 'Installation Instructions' ? 'current-tab-button' : ''}" on:click={() => currentTab = 'Installation Instructions'}>Installation Instructions</button>
     </nav>
     <div class="tab {currentTab == 'Installation Instructions' ? 'current-tab' : ''}">
         {#await installationInstructions}
@@ -52,10 +52,28 @@ let currentTab = 'Wiring Diagrams';
 </main>
 
 <style>
+    main {
+        background-color: #ddd;
+    }
     .tab {
         display: none;
     }
     .tab.current-tab {
         display: block;
+    }
+
+    .tab-bar {
+        display: flex;
+        border-bottom: 2px solid #08f;
+    }
+    .tab-bar button {
+        border: none;
+        margin: 0;
+        border-radius: 0.5em 0.5em 0 0;
+        background-color: white;
+    }
+    .tab-bar button.current-tab-button {
+        background-color: #08f;
+        color: white;
     }
 </style>

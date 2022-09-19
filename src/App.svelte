@@ -3,7 +3,7 @@
 
 	import { setContext } from "svelte";
 
-	setContext('backend', 'http://localhost:8081/');
+	setContext('backend', 'http://spin.net:8081/');
 
 	import router from 'page';  //import router object from pages.js module to perform client-side routing with
 

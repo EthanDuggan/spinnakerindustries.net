@@ -36,7 +36,7 @@ let currentTab = 'Wiring Diagrams';
         {:then Data}
             <DataTable columns={installationInstructionsColumns} data={Data}/>
         {:catch error}
-            <p>there was an error</p>
+            <p>{error.message}</p>
         {/await}
     </div>
     <div class="tab {currentTab == 'Wiring Diagrams' ? 'current-tab' : ''}">
@@ -45,7 +45,7 @@ let currentTab = 'Wiring Diagrams';
         {:then Data}
             <DataTable columns={wiringDiagramsColumns} data={Data}/>
         {:catch error}
-            <p>there was an error</p>
+            <p>{error.message}</p>
         {/await}
     </div>
     

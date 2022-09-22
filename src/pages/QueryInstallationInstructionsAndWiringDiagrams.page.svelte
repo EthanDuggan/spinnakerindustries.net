@@ -4,6 +4,8 @@ import DataTable from '../components/DataTable.svelte';
 
 // fetch data from the backend
 const backend = getContext('backend');
+console.log(backend + 'installationInstructions');
+console.log(backend + 'wiringDiagrams');
 let installationInstructions = fetch(backend + 'installationInstructions').then(res => res.json());
 let wiringDiagrams = fetch(backend + 'wiringDiagrams').then(res => res.json());
 let installationInstructionsColumns = [

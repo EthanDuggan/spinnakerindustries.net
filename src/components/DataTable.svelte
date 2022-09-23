@@ -1,7 +1,12 @@
 <script>
+    import {afterUpdate, tick} from 'svelte';
 
+    export let id;
     export let columns;  // MUST BE AN ARRAY OF DICTIONARIES IN THE FORM {header: 'Foo', key: 'foo', datatype: 'bar', width: <number be interpreted as a percentage>, width: <number be interpreted as a percentage>, width: <number be interpreted as a percentage>}
     export let data;  // MUST BE AN ARRAY OF DICTIONARIES WITH STRING KEYS THAT ARE CONSISTENT WITH THE VALUES OF THE "key" ATTRIBUTES OF THE OBJECTS IN THE COLUMN ARRAY
+    export let afterUpdateCallback; // MUST BE A FUNCTION, WILL BE CALLED WHEN THE COMPONENT IS LOADED
+
+    afterUpdate(() => afterUpdateCallback(id));
     
     const maxColumnWidth = 64;
     const minColumnWidth = 4;
@@ -116,7 +121,7 @@
 
 </script>
 
-<main class="datatable">
+<main class="datatable" id={id}>
 
     <header class="table-toolbar">
         
@@ -151,6 +156,7 @@
                     {/each}
                 </tr>
             </thead>
+            {#key pageRecordIndexes}
             <tbody>
                 {#each pageRecordIndexes as record_index}
                 <tr>
@@ -160,6 +166,7 @@
                 </tr>
                 {/each}
             </tbody>
+            {/key}
         </table>
     </div>
 </main>

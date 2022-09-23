@@ -23,6 +23,18 @@ let wiringDiagramsColumns = [
 
 let currentTab = 'Wiring Diagrams';
 
+function applyPDFLinksToDataTable(pathToFolder) {
+    //this function is pretty specific to this use case, given how the Eng Product Log.xls file has columns that correspond to the filenames of the PDFs and how this data is loaded
+    return (dataTableID) => {
+        //console.log(document.getElementById(dataTableID).getElementsByTagName('tr').length);
+        for(const row of document.getElementById(dataTableID).getElementsByTagName('tbody')[0].getElementsByTagName('tr')) {
+            //row.firstChild.innerHTML = row.firstChild.innerHTML;
+            let PDF_name = row.firstChild.innerHTML;
+            row.firstChild.innerHTML = `<a href="file://${pathToFolder}/${PDF_name}.pdf" target="_blank">${PDF_name}</a>`;
+        }
+    }
+}
+
 </script>
 
 <main>
@@ -34,7 +46,7 @@ let currentTab = 'Wiring Diagrams';
         {#await installationInstructions}
         <p>Fetching data...</p>
         {:then Data}
-            <DataTable columns={installationInstructionsColumns} data={Data}/>
+            <DataTable id='Installation-Instructions-DataTable' columns={installationInstructionsColumns} data={Data} afterUpdateCallback={applyPDFLinksToDataTable('horton/instructions/PDF')}/>
         {:catch error}
             <p>{error}</p>
         {/await}
@@ -43,7 +55,7 @@ let currentTab = 'Wiring Diagrams';
         {#await wiringDiagrams}
         <p>Fetching data...</p>
         {:then Data}
-            <DataTable columns={wiringDiagramsColumns} data={Data}/>
+            <DataTable id='Wiring Diagrams-DataTable' columns={wiringDiagramsColumns} data={Data} afterUpdateCallback={applyPDFLinksToDataTable('horton/Wiring')}/>
         {:catch error}
             <p>{error}</p>
         {/await}

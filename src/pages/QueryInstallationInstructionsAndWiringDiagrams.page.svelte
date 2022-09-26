@@ -26,11 +26,11 @@ let currentTab = 'Wiring Diagrams';
 function applyPDFLinksToDataTable(path) {
     //this function is pretty specific to this use case, given how the Eng Product Log.xls file has columns that correspond to the filenames of the PDFs and how this data is loaded
     return (dataTableID) => {
-        //console.log(document.getElementById(dataTableID).getElementsByTagName('tr').length);
         for(const row of document.getElementById(dataTableID).getElementsByTagName('tbody')[0].getElementsByTagName('tr')) {
-            //row.firstChild.innerHTML = row.firstChild.innerHTML;
+            if (row.classList.contains('processed')) continue;
             let PDF_name = row.firstChild.innerHTML;
             row.firstChild.innerHTML = `<a href="${path}/${PDF_name}.pdf" target="_blank">${PDF_name}</a>`;
+            row.classList.add('processed');
         }
     }
 }

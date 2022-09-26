@@ -52,6 +52,8 @@
             return;
         }
 
+        tablePage = 1; //make sure the user is taken to the most relevant search results (i.e. the first page)
+
         //split the query into its space-separated words (tokens)
         let tokens = searchQuery.split(/[\s]+/);
         //create a copy of the tokens array where the tokens are in all lowercase, this is done hear so that the toLowerCase method doesn't need to be run on every token each for each record we check, thus increasing performance at the cost of a tiny bit of extra memory usage

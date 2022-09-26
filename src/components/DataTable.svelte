@@ -46,13 +46,13 @@
         //since this function is a callback for a form submission and submitting a form reloads the page by default.  This line prevents the page from reloading.
         event.preventDefault();
 
+        tablePage = 1; //make sure the user is taken to the most relevant search results (i.e. the first page)
+
         //check if the search query is empty
         if (searchQuery.trim().length == 0) {
             resetTable();
             return;
         }
-
-        tablePage = 1; //make sure the user is taken to the most relevant search results (i.e. the first page)
 
         //split the query into its space-separated words (tokens)
         let tokens = searchQuery.split(/[\s]+/);

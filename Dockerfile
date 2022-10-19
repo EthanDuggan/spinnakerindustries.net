@@ -1,11 +1,18 @@
 # Start from the base node image (version 16)
-FROM node:16 
+FROM node:16
 
 # Set the working directory to be the /app directory in our docker image
 WORKDIR /app
 
+#Install cifs-utils and then mount the smb share on Horton for access to things like 'Horton/reference/Eng Product Log.xls'
+RUN ["mkdir", "/horton"]
+RUN ["mkdir", "/horton/spin.net-logs"]
+RUN apt-get update
+RUN apt-get install cifs-utils -y
+
 # Copy any npm package files into our working directory
 COPY package*.json ./
+
 
 # Run 'npm install' on our docker image to install the packages listed in the npm package files
 RUN ["npm", "install"]
@@ -21,4 +28,7 @@ ENV PORT=80
 EXPOSE 80
 
 # Start our node app
-CMD ["npm", "start"]
+# Start our node app
+ADD start.sh /
+RUN chmod +x /start.sh
+CMD ["/start.sh"]

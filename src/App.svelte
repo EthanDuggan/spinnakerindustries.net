@@ -1,9 +1,8 @@
 <script>
-	export let name;
 
 	import { setContext } from "svelte";
 
-	setContext('backend', 'http://192.168.1.7:8081/');
+	setContext('backend', `http://${location.hostname}:8081/`); //using location.hostname will ensure that the frontend always connects to the backend instance with the same hostname, i.g. the dev frontend will use the dev backend and the prod frontend will use the prod backend
 
 	import router from 'page';  //import router object from pages.js module to perform client-side routing with
 
